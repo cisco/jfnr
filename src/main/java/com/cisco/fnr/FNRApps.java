@@ -102,16 +102,23 @@ public class FNRApps {
     public static void main(String[] args) {
 
         FNR blockCipher = null;
+        byte[] saltyBytes = getRandomBytes(20);
+        SecretKeySpec spec = null;
+        String tweak = "tweak"; // Not for production
+        try {
+            // Change Password for production ;
+            spec = getSecretKeySpec("password", saltyBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
         try {
             System.out.println("Test String");
             String plainText = "Hello123";
             byte[] plainBytes = plainText.getBytes();
-            byte[] saltyBytes = getRandomBytes(20);
-            SecretKeySpec spec = getSecretKeySpec("password",
-                    saltyBytes);
 
-            blockCipher = new FNR(spec.getEncoded(), "tweak", plainText.getBytes().length * Byte.SIZE);
+            blockCipher = new FNR(spec.getEncoded(), tweak, plainText.getBytes().length * Byte.SIZE);
 
             byte[] cipherBytes = blockCipher.encrypt(plainBytes);
             byte[] decryptBytes = blockCipher.decrypt(cipherBytes);
@@ -131,7 +138,7 @@ public class FNRApps {
 
             final byte[] intArray = rankIPAddress(plainIP);
 
-            blockCipher = new FNR("password", "tweak", intArray.length
+            blockCipher = new FNR(spec.getEncoded(), tweak, intArray.length
                     * Byte.SIZE);
 
             byte[] cipherBytes = blockCipher.encrypt(intArray);
