@@ -13,6 +13,9 @@
   RUN : Import the source code in any editor like IntelliJ or Eclipse
         Run "FNRApps" class for demo applications
 
+  jfnr depends on native libraries generated from libfnr
+  currently the .so files are generated and tested on Ubuntu 13.10
+
 
   For more details about libfnr please visit
    http://sashank.github.io/libfnr/
