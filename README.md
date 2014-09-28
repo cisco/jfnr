@@ -14,20 +14,18 @@
         Run "FNRApps" class for demo applications
 
 
-  Report bugs to <libfnr-dev@external.cisco.com>
   For more details about libfnr please visit
+   http://sashank.github.io/libfnr/
 
+  Report bugs to <libfnr-dev@external.cisco.com>
 
- IMPORTANT:  This is an *experimental* cipher, not for production yet.
+  IMPORTANT:  This is an *experimental* cipher, not for production yet.
  
- FNR has been accepted for publication in
-   Fourth International Conference on Security, Privacy, and Applied Cryptography Engineering (SPACE 2014)
-
- FNR is designed by 
+  FNR is designed by 
       Sashank Dara (sadara@cisco.com), 
       Scott Fluhrer (sfluhrer@cisco.com)
 
- jfnr extensions are contributed by
+  jfnr extensions are contributed by
       Bhanu Prakash Gopularam (bhanprak@cisco.com)
 
  Copyright (C) 2014 , Cisco Systems Inc.
