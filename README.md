@@ -1,5 +1,5 @@
 
-  jfnr -  Java bindings for libfnr;
+  jfnr -  Java extensions for libfnr;
   A reference implementation library for FNR encryption scheme.
 
   FNR represents "Flexible Naor and Reingold" 
