@@ -1,5 +1,37 @@
 package com.cisco.fnr;
 
+/*
+*    jfnr  - uses JNA for calling native implementation of libFNR
+*
+*    jfnr extensions are contributed by Bhanu Prakash Gopularam (bhanprak@cisco.com)
+*    
+*    libFNR - A reference implementation library for FNR encryption mode.
+*
+*    FNR represents "Flexible Naor and Reingold" mode
+
+*    FNR is a small domain block cipher to encrypt small domain
+*    objects ( < 128 bits ) like IPv4, MAC, Credit Card numbers etc.
+
+*    FNR is designed by Sashank Dara (sadara@cisco.com), Scott Fluhrer (sfluhrer@cisco.com)
+*
+*
+*    Copyright (C) 2014 , Cisco Systems Inc.
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*
+**/
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -10,9 +42,6 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
-/**
- * Created by sadara on 9/28/14.
- */
 public class FNRApps {
     public static byte[] rankIPAddress(String ipAddress){
         int a,b,c,d ;
