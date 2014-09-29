@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.cisco.fnr.FNRApps</mainClass>
+                            <mainClass>com.cisco.fnr.FNRUtils</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

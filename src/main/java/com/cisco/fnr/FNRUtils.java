@@ -40,13 +40,10 @@ import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 
-public class FNRApps {
+public class FNRUtils {
     public static byte[] rankIPAddress(String ipAddress){
         int a,b,c,d ;
-       // if(!IPAddress.isValidIPv4(ipAddress)) return  null ;
-
         String[] comps = ipAddress.split("\\.");
         a = Integer.valueOf( comps[0]);
         b = Integer.valueOf( comps[1]);
@@ -66,7 +63,7 @@ public class FNRApps {
     }
     public  static String toIPv4String (int address)
     {
-        StringBuffer sb = new StringBuffer(16);
+        StringBuilder sb = new StringBuilder(16);
         for (int ii = 3; ii >= 0; ii--)
         {
             sb.append((int) (0xFF & (address >> (8*ii))));
@@ -99,62 +96,5 @@ public class FNRApps {
 
         return saltyBytes;
     }
-    public static void main(String[] args) {
 
-        FNR blockCipher = null;
-        byte[] saltyBytes = getRandomBytes(20);
-        SecretKeySpec spec = null;
-        String tweak = "tweak"; // Not for production
-        try {
-            // Change Password for production ;
-            spec = getSecretKeySpec("password", saltyBytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try {
-            System.out.println("Test String");
-            String plainText = "Hello123";
-            byte[] plainBytes = plainText.getBytes();
-
-            blockCipher = new FNR(spec.getEncoded(), tweak, plainText.getBytes().length * Byte.SIZE);
-
-            byte[] cipherBytes = blockCipher.encrypt(plainBytes);
-            byte[] decryptBytes = blockCipher.decrypt(cipherBytes);
-
-            if (Arrays.equals(plainBytes, decryptBytes))
-                System.out.println("It works for Strings!");
-        } catch (Exception e) {
-            System.out
-                    .println("Something went wrong .. some where for String .."
-                            + e.getMessage());
-        }
-
-        try {
-            System.out.println("Test IPv4 Address");
-            String plainIP = "10.20.30.40";
-            String decryptedIP, cipherIP;
-
-            final byte[] intArray = rankIPAddress(plainIP);
-
-            blockCipher = new FNR(spec.getEncoded(), tweak, intArray.length
-                    * Byte.SIZE);
-
-            byte[] cipherBytes = blockCipher.encrypt(intArray);
-            cipherIP = deRankIPAddress(cipherBytes);
-            System.out.println("Given IPv4 Address is " + plainIP);
-            System.out.println("Encrypted IPv4 Address is " + cipherIP);
-
-            byte[] decryptBytes = blockCipher.decrypt(cipherBytes);
-            decryptedIP = deRankIPAddress(decryptBytes);
-
-            if (plainIP.equals(decryptedIP))
-                System.out.println("It works for IPv4 Address!");
-        } catch (Exception e) {
-            System.out
-                    .println("Something went wrong .. some where for String .."
-                            + e.getMessage());
-        }
-    }
 }
