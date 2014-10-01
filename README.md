@@ -9,6 +9,8 @@
 
 
   LICENSE -- LGPL (2.1) license copy under which this library is being released
+ 
+  Pre-requisites : Install libfnr as shared libraries are needed
 
   RUN : Import the source code in any editor like IntelliJ or Eclipse
         Junit test cases provided contains usage and demo applications

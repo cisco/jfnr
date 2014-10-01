@@ -58,8 +58,9 @@ public class FNR  {
         if(tweak.length() > MAX_TWEAK_LENGTH)
             throw   new InvalidParameterException("Invalid Tweak Size");
 
-           // Load the Library
+
           try {
+              // Load the Library
               fnrInstance = (FNRLibrary) Native.loadLibrary("fnr", FNRLibrary.class);
 
               // 1. FNR Init
