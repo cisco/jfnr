@@ -35,24 +35,22 @@ package com.cisco.fnr;
 **/
 
 import com.sun.jna.Native;
-import org.omg.CORBA.DynAnyPackage.Invalid;
+
 
 import java.security.InvalidParameterException;
 
 public class FNR  {
 
-    private final int MAX_BLOCK_SIZE = 128;
-    private final int MAX_TWEAK_LENGTH = 8;
-    private final int MIN_BLOCK_SIZE = 16;
     private int blockSize;
     private FNRLibrary.fnr_expanded_key.ByReference expanded_key = null;
 	private FNRLibrary.fnr_expanded_tweak.ByReference expanded_tweak = null;
-
-
 	private FNRLibrary fnrInstance ;
 
 
 	public FNR(byte[] key, String tweak, int blockSize) throws InvalidParameterException{
+        final int MAX_BLOCK_SIZE = 128;
+        final int MAX_TWEAK_LENGTH = 8;
+        final int MIN_BLOCK_SIZE = 16;
 
         if( blockSize < MIN_BLOCK_SIZE || blockSize >= MAX_BLOCK_SIZE)
            throw   new InvalidParameterException("Invalid Block Size");
