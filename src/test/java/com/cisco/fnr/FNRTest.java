@@ -39,6 +39,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 
 public class FNRTest extends TestCase {
@@ -142,5 +143,98 @@ public class FNRTest extends TestCase {
         }
 
     }
+
+    public void testTweakSize(){
+
+        System.out.println("Testing tweak size");
+        try {
+            tweak ="thisislongtweakeeeeeeee"  ;
+            blockCipher = new FNR(keySpec.getEncoded(), tweak, 32);
+        }
+        catch (InvalidParameterException e){
+            assertFalse("Invalid tweak size", false);
+        }
+
+        try {
+            tweak ="smalltweak"  ;
+            blockCipher = new FNR(keySpec.getEncoded(), tweak, 32);
+        }
+        catch (InvalidParameterException e){
+            assertFalse("Invalid tweak size", false);
+        }
+
+        try {
+            tweak ="tweak"  ;
+            blockCipher = new FNR(keySpec.getEncoded(), tweak, 32);
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid tweak size", false);
+        }
+
+    }
+
+    public void testBlockSize(){
+        System.out.println("Testing Block size");
+
+        try {
+            blockCipher = new FNR(keySpec.getEncoded(), tweak, 0);
+        }
+        catch (InvalidParameterException e){
+            assertFalse("Invalid block size", false);
+        }
+
+        try {
+            blockCipher = new FNR(keySpec.getEncoded(), tweak, 130);
+        }
+        catch (InvalidParameterException e){
+            assertFalse("Invalid block size", false);
+        }
+
+        try {
+            blockCipher = new FNR(keySpec.getEncoded(), tweak, 32);
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid block size", false);
+        }
+    }
+
+    public void testInputLength(){
+        System.out.println("Testing Input Lengths in Encryption");
+        byte[] bytes = new byte[10];
+        Arrays.fill(bytes, (byte) 0); //
+        blockCipher = new FNR(keySpec.getEncoded(), tweak, 32);  // 4 bytes
+
+        try {
+            blockCipher.encrypt(bytes);
+        }
+        catch (InvalidParameterException e){
+            assertFalse("Invalid input size", false);
+        }
+
+        try {
+            blockCipher.decrypt(bytes);
+        }
+        catch (InvalidParameterException e){
+            assertFalse("Invalid input size", false);
+        }
+
+        bytes = new byte[4];
+        Arrays.fill(bytes, (byte) 0); //
+
+        try {
+            blockCipher.encrypt(bytes);
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid input size" + e.getMessage(), false);
+        }
+
+        try {
+            blockCipher.decrypt(bytes);
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid input size" + e.getMessage(), false);
+        }
+    }
+
 
 }

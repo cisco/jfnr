@@ -35,54 +35,58 @@ package com.cisco.fnr;
 **/
 
 import com.sun.jna.Native;
+import org.omg.CORBA.DynAnyPackage.Invalid;
+
+import java.security.InvalidParameterException;
 
 public class FNR  {
 
-	private FNRLibrary.fnr_expanded_key.ByReference expanded_key = null;
+    private final int MAX_BLOCK_SIZE = 128;
+    private final int MAX_TWEAK_LENGTH = 8;
+    private final int MIN_BLOCK_SIZE = 16;
+    private int blockSize;
+    private FNRLibrary.fnr_expanded_key.ByReference expanded_key = null;
 	private FNRLibrary.fnr_expanded_tweak.ByReference expanded_tweak = null;
-	private static FNRLibrary fnrInstance = (FNRLibrary) Native.loadLibrary(
-			"fnr", FNRLibrary.class);
-	private static FNRLibrary sslInstance = (FNRLibrary) Native.loadLibrary(
-			"ssl", FNRLibrary.class);
 
-	public FNR(String password, String tweak, int inputLength) throws Exception {
-		// Load the Library
 
-		// 1. FNR Init
-		fnrInstance.FNR_init();
+	private FNRLibrary fnrInstance ;
 
-		// 2. expand key
-		expanded_key = fnrInstance.FNR_expand_key(password.getBytes(), 128,
-				new FNRLibrary.size_t(inputLength));
 
-		// 3. create tweak
-		expanded_tweak = new FNRLibrary.fnr_expanded_tweak.ByReference();
-		fnrInstance.FNR_expand_tweak(expanded_tweak, expanded_key,
-				tweak.getBytes(), new FNRLibrary.size_t(tweak.length()));
+	public FNR(byte[] key, String tweak, int blockSize) throws InvalidParameterException{
+
+        if( blockSize < MIN_BLOCK_SIZE || blockSize >= MAX_BLOCK_SIZE)
+           throw   new InvalidParameterException("Invalid Block Size");
+
+        if(tweak.length() > MAX_TWEAK_LENGTH)
+            throw   new InvalidParameterException("Invalid Tweak Size");
+
+           // Load the Library
+          try {
+              fnrInstance = (FNRLibrary) Native.loadLibrary("fnr", FNRLibrary.class);
+
+              // 1. FNR Init
+              fnrInstance.FNR_init();
+
+              // 2. expand key
+              expanded_key = fnrInstance.FNR_expand_key(key, MAX_BLOCK_SIZE,
+                      new FNRLibrary.size_t(blockSize));
+
+              // 3. create tweak
+              expanded_tweak = new FNRLibrary.fnr_expanded_tweak.ByReference();
+              fnrInstance.FNR_expand_tweak(expanded_tweak, expanded_key,
+                      tweak.getBytes(), new FNRLibrary.size_t(tweak.length()));
+
+          }
+          catch (UnsatisfiedLinkError error){
+              throw  new InvalidParameterException("Invalid library file" +error.getMessage()) ;
+          }
+        this.blockSize = blockSize;
 	}
 
-	public FNR(byte[] encoded, String tweak, int blockSize) {
-		tweak = "tweak";
-		
-		// Load the Library
-		fnrInstance = (FNRLibrary) Native.loadLibrary("fnr", FNRLibrary.class);
-		// 1. FNR Init
-		fnrInstance.FNR_init();
-
-		// 2. expand key
-		expanded_key = fnrInstance.FNR_expand_key(encoded, 128,
-				new FNRLibrary.size_t(blockSize));
-
-		// 3. create tweak
-		expanded_tweak = new FNRLibrary.fnr_expanded_tweak.ByReference();
-		fnrInstance.FNR_expand_tweak(expanded_tweak, expanded_key,
-				tweak.getBytes(), new FNRLibrary.size_t(tweak.length()));
-	}
-
-	public byte[] encrypt(byte[] plainBytes) throws Exception {
-		if (plainBytes == null || plainBytes.length > 8
-				|| plainBytes.length <= 0)
-			throw new Exception("Invalid Input Length");
+	public byte[] encrypt(byte[] plainBytes) throws InvalidParameterException {
+		if (plainBytes == null
+                || (plainBytes.length* Byte.SIZE)  != blockSize)
+			throw new InvalidParameterException("Invalid Input Length");
 
 		byte[] cipherBytes = new byte[plainBytes.length];
 		fnrInstance.FNR_encrypt(expanded_key, expanded_tweak, plainBytes,
@@ -90,10 +94,10 @@ public class FNR  {
 		return cipherBytes;
 	}
 
-	public byte[] decrypt(byte[] cipherBytes) throws Exception {
-		if (cipherBytes == null || cipherBytes.length > 8
-				|| cipherBytes.length <= 0)
-			throw new Exception("Invalid Input Length");
+	public byte[] decrypt(byte[] cipherBytes) throws InvalidParameterException {
+		if (cipherBytes == null
+                || (cipherBytes.length * Byte.SIZE) != blockSize)
+			throw new InvalidParameterException("Invalid Input Length");
 
 		byte decryptedBytes[] = new byte[cipherBytes.length];
 
@@ -102,18 +106,5 @@ public class FNR  {
 
 		return decryptedBytes;
 	}
-
-	public byte[] encrypt(byte[] plainBytes, byte[] ivBytes) throws Exception {
-		return new byte[0];
-	}
-
-	public byte[] decrypt(byte[] cipherText, byte[] ivBytes) throws Exception {
-		return new byte[0];
-	}
-
-	public byte[] getIvBytes(long id) {
-		return new byte[0];
-	}
-
 
 }
