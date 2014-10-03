@@ -16,7 +16,7 @@
         Junit test cases provided contains usage and demo applications
 
   For more details about libfnr please visit
-   http://sashank.github.io/libfnr/
+   http://cisco.github.io/libfnr/
 
   Report bugs to <libfnr-dev@external.cisco.com>
 
