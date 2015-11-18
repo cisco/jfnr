@@ -49,6 +49,7 @@ public class FNR  {
 
 	public FNR(byte[] key, String tweak, int blockSize) throws InvalidParameterException{
         final int MAX_BLOCK_SIZE = 128;
+        final int KEY_SIZE = 128;
         final int MAX_TWEAK_LENGTH = 8;
         final int MIN_BLOCK_SIZE = 16;
 
@@ -57,6 +58,9 @@ public class FNR  {
 
         if(tweak.length() > MAX_TWEAK_LENGTH)
             throw   new InvalidParameterException("Invalid Tweak Size");
+
+        if(key == null || key.length * 8 != KEY_SIZE)
+            throw   new InvalidParameterException("Invalid Key Size");
 
 
           try {

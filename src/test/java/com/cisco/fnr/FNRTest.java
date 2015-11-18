@@ -40,7 +40,10 @@ import junit.framework.TestSuite;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.concurrent.Exchanger;
 
 public class FNRTest extends TestCase {
     FNR blockCipher ;
@@ -70,15 +73,18 @@ public class FNRTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         blockCipher = null;
-        byte[] saltyBytes = FNRUtils.getRandomBytes(20);
         password = "password"; // Not for production
         tweak = "tweak" ; // Not for production
         try {
-            // Change Password for production ;
-            keySpec = FNRUtils.getSecretKeySpec(password, saltyBytes);
+            initKeySpec();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void initKeySpec() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] saltyBytes = FNRUtils.getRandomBytes(20);
+        keySpec = FNRUtils.getSecretKeySpec(password, saltyBytes);
     }
 
     public void tearDown() throws Exception {
@@ -234,6 +240,53 @@ public class FNRTest extends TestCase {
         catch (InvalidParameterException e){
             assertTrue("Invalid input size" + e.getMessage(), false);
         }
+    }
+
+    public void testKeySize(){
+        System.out.println("Testing Key Sizes in Encryption");
+        byte[] plainBytes = new byte[4];
+        byte[] keyBytes =  FNRUtils.getRandomBytes(20);
+
+        Arrays.fill(plainBytes, (byte) 0); //
+
+        try {
+            blockCipher = new FNR(keyBytes, tweak, 32);  // 4 bytes
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid key size", true);
+        }
+
+        password = "password123344555555555"; // Not for production
+        tweak = "tweak" ; // Not for production
+
+        try {
+            initKeySpec();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            blockCipher = new FNR(keyBytes, tweak, 32);  // 4 bytes
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid key size", true);
+        }
+
+        try {
+            blockCipher = new FNR(null, tweak, 32);  // 4 bytes
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid key size", true);
+        }
+
+        try {
+            keyBytes =  FNRUtils.getRandomBytes(16);
+            blockCipher = new FNR(keyBytes, tweak, 32);  // 4 bytes
+        }
+        catch (InvalidParameterException e){
+            assertTrue("Invalid key size", false);
+        }
+
     }
 
 
