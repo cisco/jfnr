@@ -42,7 +42,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
 public class FNRUtils {
-    public static byte[] rankIPAddress(String ipAddress){
+    public static byte[] rankIPv4Address(String ipAddress){
         int a,b,c,d ;
         String[] comps = ipAddress.split("\\.");
         a = Integer.valueOf( comps[0]);
@@ -55,11 +55,17 @@ public class FNRUtils {
         return ByteBuffer.allocate(4).putInt(ip).array();
     }
 
+    public static byte[] rankIPAddress(String ipAddress){
+        return rankIPv4Address(ipAddress);
+    }
 
-    public static String deRankIPAddress(byte[] ipBytes){
+    public static String deRankIPv4Address(byte[] ipBytes){
         final int ip = ByteBuffer.wrap(ipBytes).getInt();
         return toIPv4String(ip);
+    }
 
+    public static String deRankIPAddress(byte[] ipBytes){
+        return deRankIPv4Address(ipBytes);
     }
     public  static String toIPv4String (int address)
     {
